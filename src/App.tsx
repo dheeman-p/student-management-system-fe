@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Login from './pages/Login';
+import AdminSchedulePage from './pages/admin/Schedule';
 import { isAuthenticated, clearToken } from './auth/session';
 import { api, UserProfile } from './api/client';
 
@@ -46,6 +47,14 @@ export default function App() {
         element={
           <RequireAuth>
             <Dashboard />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/admin/schedule"
+        element={
+          <RequireAuth>
+            <AdminSchedulePage />
           </RequireAuth>
         }
       />

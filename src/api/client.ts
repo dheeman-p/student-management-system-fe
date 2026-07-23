@@ -16,6 +16,7 @@ export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
+    public errors?: Record<string, string>,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -24,9 +25,11 @@ export class ApiError extends Error {
 
 /**
  * Thin fetch wrapper that injects the bearer token and normalizes errors.
- * This is the single API entry point used by all later tasks.
+ * This is the single API entry point used by all later tasks. Exported so
+ * feature-specific API modules (e.g. api/schedule.ts) can reuse it instead of
+ * duplicating fetch/error-handling logic.
  */
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -45,7 +48,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!res.ok) {
     const message = (body && (body as { message?: string }).message) || res.statusText;
-    throw new ApiError(res.status, message);
+    const errors = (body && (body as { errors?: Record<string, string> }).errors) || undefined;
+    throw new ApiError(res.status, message, errors);
   }
 
   return body as T;
