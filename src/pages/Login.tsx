@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../api/client';
-import { setToken, clearToken } from '../auth/session';
+import { setToken } from '../auth/session';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -19,22 +19,15 @@ export default function Login() {
       const { token } = await api.login(email, password);
       setToken(token);
 
-      // 2) Resolve the application profile. A 404 here means the credentials
-      //    are valid but no profile is provisioned — block access.
-      try {
-        await api.me();
-        navigate('/');
-      } catch (profileErr) {
-        clearToken();
-        if (profileErr instanceof ApiError && profileErr.status === 404) {
-          setError('No profile found, contact admin');
-        } else {
-          setError('Unable to load your profile. Please try again.');
-        }
-      }
-    } catch (loginErr) {
+      // 2) Resolve the application profile. A successful login always implies
+      //    /auth/me succeeds — login identity and profile are the same record.
+      await api.me();
+      navigate('/');
+    } catch (err) {
+      // A 401 here is handled globally (client.ts clears the stored token);
+      // we only need to surface the right message for invalid credentials.
       const message =
-        loginErr instanceof ApiError && loginErr.status === 401
+        err instanceof ApiError && err.status === 401
           ? 'Invalid email or password'
           : 'Login failed. Please try again.';
       setError(message);

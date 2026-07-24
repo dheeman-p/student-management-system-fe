@@ -4,8 +4,15 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export type Role = 'ADMIN' | 'TEACHER' | 'STUDENT';
 
+/**
+ * A user's login identity and profile are the same backend record — there is
+ * no separate profile entity. `authId` is kept as an alias of `id` for any
+ * call sites that still reference it, and is always derived client-side from
+ * the `id` returned by the backend (the backend does not send `authId`).
+ */
 export interface UserProfile {
   id: string;
+  /** @deprecated alias of `id`; derived client-side, not sent by the backend */
   authId: string;
   email: string;
   name: string;
@@ -59,6 +66,9 @@ export const api = {
     });
   },
   me(): Promise<UserProfile> {
-    return request('/auth/me');
+    return request<Omit<UserProfile, 'authId'>>('/auth/me').then((profile) => ({
+      ...profile,
+      authId: profile.id,
+    }));
   },
 };
