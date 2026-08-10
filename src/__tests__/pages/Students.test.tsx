@@ -1,5 +1,5 @@
 // FILE: frontend/src/__tests__/pages/Students.test.tsx
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Students from '../../pages/Students';
 import { useStudentStore } from '../../store/studentStore';
@@ -16,11 +16,20 @@ const sampleStudent: Student = {
   updatedAt: '2026-01-01T00:00:00.000Z',
 };
 
+const graceHopper: Student = {
+  ...sampleStudent,
+  id: '2',
+  firstName: 'Grace',
+  lastName: 'Hopper',
+  email: 'grace@example.com',
+};
+
 function resetStore(overrides: Partial<ReturnType<typeof useStudentStore.getState>> = {}) {
   useStudentStore.setState({
     students: [],
     status: 'idle',
     error: null,
+    searchTerm: '',
     fetchStudents: vi.fn(async () => {}),
     addStudent: vi.fn(),
     updateStudent: vi.fn(),
@@ -63,5 +72,29 @@ describe('Students page', () => {
     expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
     expect(screen.getByText('ada@example.com')).toBeInTheDocument();
     expect(screen.getByText('10th Grade')).toBeInTheDocument();
+  });
+
+  it('filters the visible students as the user types in the search box', () => {
+    resetStore({ status: 'ready', students: [sampleStudent, graceHopper] });
+    render(<Students />);
+
+    fireEvent.change(screen.getByLabelText('Search students'), {
+      target: { value: 'grace' },
+    });
+
+    expect(screen.getByText('Grace Hopper')).toBeInTheDocument();
+    expect(screen.queryByText('Ada Lovelace')).not.toBeInTheDocument();
+  });
+
+  it('shows a no-match message when the search term matches nobody', () => {
+    resetStore({ status: 'ready', students: [sampleStudent] });
+    render(<Students />);
+
+    fireEvent.change(screen.getByLabelText('Search students'), {
+      target: { value: 'zzz-no-match' },
+    });
+
+    expect(screen.getByText('No students match your search.')).toBeInTheDocument();
+    expect(screen.queryByText('Ada Lovelace')).not.toBeInTheDocument();
   });
 });

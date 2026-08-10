@@ -44,7 +44,7 @@ const sampleStudent: Student = {
 };
 
 function resetStore() {
-  useStudentStore.setState({ students: [], status: 'idle', error: null });
+  useStudentStore.setState({ students: [], status: 'idle', error: null, searchTerm: '' });
 }
 
 describe('useStudentStore', () => {
@@ -123,5 +123,38 @@ describe('useStudentStore', () => {
     await useStudentStore.getState().removeStudent('1');
 
     expect(useStudentStore.getState().students).toHaveLength(0);
+  });
+
+  describe('search filtering', () => {
+    const grace: Student = {
+      ...sampleStudent,
+      id: '2',
+      firstName: 'Grace',
+      lastName: 'Hopper',
+      email: 'grace@example.com',
+    };
+
+    it('defaults to an empty searchTerm and returns every student', () => {
+      useStudentStore.setState({ students: [sampleStudent, grace], status: 'ready', error: null });
+
+      expect(useStudentStore.getState().searchTerm).toBe('');
+      expect(useStudentStore.getState().filteredStudents()).toEqual([sampleStudent, grace]);
+    });
+
+    it('filters students by (partial, case-insensitive) name or email via setSearchTerm', () => {
+      useStudentStore.setState({ students: [sampleStudent, grace], status: 'ready', error: null });
+
+      useStudentStore.getState().setSearchTerm('GRACE');
+
+      expect(useStudentStore.getState().filteredStudents()).toEqual([grace]);
+    });
+
+    it('returns an empty array when no student matches the search term', () => {
+      useStudentStore.setState({ students: [sampleStudent], status: 'ready', error: null });
+
+      useStudentStore.getState().setSearchTerm('zzz-no-match');
+
+      expect(useStudentStore.getState().filteredStudents()).toHaveLength(0);
+    });
   });
 });

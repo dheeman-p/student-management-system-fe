@@ -8,12 +8,16 @@ import StudentForm from '../components/StudentForm';
  * Students list page. Reads/loads state exclusively via `useStudentStore`
  * (Zustand) — no local fetch/useState duplication of server state. Local
  * `editingStudent` state only tracks which row (if any) the create/edit
- * form should target; the actual student data lives in the store.
+ * form should target; the actual student data (and the search filter) lives
+ * in the store.
  */
 export default function Students() {
   const students = useStudentStore((s) => s.students);
   const status = useStudentStore((s) => s.status);
   const error = useStudentStore((s) => s.error);
+  const searchTerm = useStudentStore((s) => s.searchTerm);
+  const setSearchTerm = useStudentStore((s) => s.setSearchTerm);
+  const filteredStudents = useStudentStore((s) => s.filteredStudents());
   const fetchStudents = useStudentStore((s) => s.fetchStudents);
   const removeStudent = useStudentStore((s) => s.removeStudent);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
@@ -39,6 +43,21 @@ export default function Students() {
       {status === 'ready' && students.length === 0 && <p>No students found.</p>}
 
       {status === 'ready' && students.length > 0 && (
+        <input
+          type="search"
+          aria-label="Search students"
+          placeholder="Search by name or email…"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ width: '100%', padding: 8, marginBottom: 12 }}
+        />
+      )}
+
+      {status === 'ready' && students.length > 0 && filteredStudents.length === 0 && (
+        <p>No students match your search.</p>
+      )}
+
+      {status === 'ready' && filteredStudents.length > 0 && (
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
@@ -50,7 +69,7 @@ export default function Students() {
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
+            {filteredStudents.map((student) => (
               <tr key={student.id}>
                 <td>
                   {student.firstName} {student.lastName}
