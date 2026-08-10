@@ -1,45 +1,9 @@
 // FILE: frontend/src/App.tsx
-import { Link, Navigate, Route, Routes } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import { useAuthStore } from './store/authStore';
-
-function Dashboard() {
-  const profile = useAuthStore((s) => s.profile);
-  const fetchProfile = useAuthStore((s) => s.fetchProfile);
-  const logout = useAuthStore((s) => s.logout);
-
-  useEffect(() => {
-    if (!profile) {
-      fetchProfile();
-    }
-  }, [profile, fetchProfile]);
-
-  return (
-    <main style={{ maxWidth: 640, margin: '4rem auto', fontFamily: 'sans-serif' }}>
-      <h1>Dashboard</h1>
-      {profile ? (
-        <p>
-          Welcome, {profile.name} ({profile.role})
-        </p>
-      ) : (
-        <p>Loading…</p>
-      )}
-      <p>
-        <Link to="/students">View students</Link>
-      </p>
-      <button
-        onClick={() => {
-          logout();
-          window.location.assign('/login');
-        }}
-      >
-        Sign out
-      </button>
-    </main>
-  );
-}
 
 function RequireAuth({ children }: { children: JSX.Element }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated());
