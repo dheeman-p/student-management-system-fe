@@ -1,10 +1,14 @@
 // FILE: frontend/src/pages/Students.tsx
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStudentStore } from '../store/studentStore';
+import { Student } from '../types/student';
+import StudentForm from '../components/StudentForm';
 
 /**
  * Students list page. Reads/loads state exclusively via `useStudentStore`
- * (Zustand) — no local fetch/useState duplication of server state.
+ * (Zustand) — no local fetch/useState duplication of server state. Local
+ * `editingStudent` state only tracks which row (if any) the create/edit
+ * form should target; the actual student data lives in the store.
  */
 export default function Students() {
   const students = useStudentStore((s) => s.students);
@@ -12,6 +16,7 @@ export default function Students() {
   const error = useStudentStore((s) => s.error);
   const fetchStudents = useStudentStore((s) => s.fetchStudents);
   const removeStudent = useStudentStore((s) => s.removeStudent);
+  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
 
   useEffect(() => {
     fetchStudents();
@@ -20,6 +25,8 @@ export default function Students() {
   return (
     <main style={{ maxWidth: 720, margin: '4rem auto', fontFamily: 'sans-serif' }}>
       <h1>Students</h1>
+
+      <StudentForm editingStudent={editingStudent} onDone={() => setEditingStudent(null)} />
 
       {status === 'loading' && <p>Loading students…</p>}
 
@@ -52,6 +59,7 @@ export default function Students() {
                 <td>{student.grade}</td>
                 <td>{student.status}</td>
                 <td>
+                  <button onClick={() => setEditingStudent(student)}>Edit</button>{' '}
                   <button onClick={() => removeStudent(student.id)}>Remove</button>
                 </td>
               </tr>
