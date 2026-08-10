@@ -1,7 +1,7 @@
 // FILE: frontend/src/pages/Login.tsx
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from '../store';
 
 export default function Login() {
   const navigate = useNavigate();

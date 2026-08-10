@@ -1,6 +1,6 @@
 // FILE: frontend/src/components/StudentForm.tsx
 import { FormEvent, useEffect, useState } from 'react';
-import { useStudentStore } from '../store/studentStore';
+import { useStudentStore } from '../store';
 import { Student, StudentStatus } from '../types/student';
 
 export interface StudentFormProps {

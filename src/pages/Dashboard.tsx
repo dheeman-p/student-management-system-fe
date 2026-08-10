@@ -1,7 +1,7 @@
 // FILE: frontend/src/pages/Dashboard.tsx
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from '../store';
 
 /**
  * Dashboard/home page. Extracted out of App.tsx so every route renders a

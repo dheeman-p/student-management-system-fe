@@ -1,6 +1,6 @@
 // FILE: frontend/src/pages/Students.tsx
 import { useEffect, useState } from 'react';
-import { useStudentStore } from '../store/studentStore';
+import { useStudentStore } from '../store';
 import { Student } from '../types/student';
 import StudentForm from '../components/StudentForm';
 
