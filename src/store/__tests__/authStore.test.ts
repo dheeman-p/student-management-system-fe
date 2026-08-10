@@ -112,4 +112,20 @@ describe('useAuthStore', () => {
     expect(state.status).toBe('idle');
     expect(clearToken).toHaveBeenCalled();
   });
+
+  it('clearError resets only the error field, leaving token/profile/status untouched', () => {
+    useAuthStore.setState({
+      token: 't',
+      profile: null,
+      status: 'error',
+      error: 'Invalid email or password',
+    });
+
+    useAuthStore.getState().clearError();
+
+    const state = useAuthStore.getState();
+    expect(state.error).toBeNull();
+    expect(state.status).toBe('error');
+    expect(state.token).toBe('t');
+  });
 });

@@ -6,6 +6,7 @@ import { useAuthStore } from '../store';
 export default function Login() {
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
+  const clearError = useAuthStore((s) => s.clearError);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +24,11 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function dismissError() {
+    setError(null);
+    clearError();
   }
 
   return (
@@ -51,7 +57,10 @@ export default function Login() {
         </label>
         {error && (
           <p role="alert" style={{ color: '#b00020' }}>
-            {error}
+            {error}{' '}
+            <button type="button" onClick={dismissError} style={{ marginLeft: 8 }}>
+              Dismiss
+            </button>
           </p>
         )}
         <button type="submit" disabled={loading} style={{ width: '100%', padding: 10 }}>

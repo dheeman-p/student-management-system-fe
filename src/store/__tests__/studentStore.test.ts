@@ -125,6 +125,21 @@ describe('useStudentStore', () => {
     expect(useStudentStore.getState().students).toHaveLength(0);
   });
 
+  it('clearError resets only the error field, leaving the student list untouched', () => {
+    useStudentStore.setState({
+      students: [sampleStudent],
+      status: 'error',
+      error: 'Unable to load students.',
+    });
+
+    useStudentStore.getState().clearError();
+
+    const state = useStudentStore.getState();
+    expect(state.error).toBeNull();
+    expect(state.status).toBe('error');
+    expect(state.students).toHaveLength(1);
+  });
+
   describe('search filtering', () => {
     const grace: Student = {
       ...sampleStudent,

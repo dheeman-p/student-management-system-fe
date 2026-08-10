@@ -20,6 +20,7 @@ export default function Students() {
   const filteredStudents = useStudentStore((s) => s.filteredStudents());
   const fetchStudents = useStudentStore((s) => s.fetchStudents);
   const removeStudent = useStudentStore((s) => s.removeStudent);
+  const clearError = useStudentStore((s) => s.clearError);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
 
   useEffect(() => {
@@ -36,7 +37,10 @@ export default function Students() {
 
       {status === 'error' && (
         <p role="alert" style={{ color: '#b00020' }}>
-          {error}
+          {error}{' '}
+          <button type="button" onClick={clearError} style={{ marginLeft: 8 }}>
+            Dismiss
+          </button>
         </p>
       )}
 

@@ -34,6 +34,7 @@ function resetStore(overrides: Partial<ReturnType<typeof useStudentStore.getStat
     addStudent: vi.fn(),
     updateStudent: vi.fn(),
     removeStudent: vi.fn(),
+    clearError: vi.fn(),
     ...overrides,
   });
 }
@@ -64,6 +65,16 @@ describe('Students page', () => {
     resetStore({ status: 'error', error: 'Unable to load students.' });
     render(<Students />);
     expect(screen.getByRole('alert')).toHaveTextContent('Unable to load students.');
+  });
+
+  it('dismisses the error banner and calls the student store clearError action', () => {
+    const clearError = vi.fn();
+    resetStore({ status: 'error', error: 'Unable to load students.', clearError });
+    render(<Students />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+
+    expect(clearError).toHaveBeenCalled();
   });
 
   it('renders each student row when data is loaded', () => {

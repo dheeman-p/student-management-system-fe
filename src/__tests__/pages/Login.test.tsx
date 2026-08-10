@@ -15,6 +15,7 @@ function resetStore(overrides: Partial<ReturnType<typeof useAuthStore.getState>>
     login: vi.fn(),
     logout: vi.fn(),
     fetchProfile: vi.fn(async () => {}),
+    clearError: vi.fn(),
     ...overrides,
   });
 }
@@ -54,5 +55,22 @@ describe('Login page', () => {
     await waitFor(() =>
       expect(screen.getByRole('alert')).toHaveTextContent('Invalid email or password'),
     );
+  });
+
+  it('dismisses the error banner and calls the auth store clearError action', async () => {
+    const login = vi.fn().mockRejectedValue(new Error('Invalid email or password'));
+    const clearError = vi.fn();
+    resetStore({ login, clearError });
+    render(<Login />, { wrapper: MemoryRouter });
+
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'a@b.com' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'wrong' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+    await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+
+    expect(clearError).toHaveBeenCalled();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 });
