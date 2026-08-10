@@ -1,15 +1,19 @@
+// FILE: frontend/src/App.tsx
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Login from './pages/Login';
-import { isAuthenticated, clearToken } from './auth/session';
-import { api, UserProfile } from './api/client';
+import { useAuthStore } from './store/authStore';
 
 function Dashboard() {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const profile = useAuthStore((s) => s.profile);
+  const fetchProfile = useAuthStore((s) => s.fetchProfile);
+  const logout = useAuthStore((s) => s.logout);
 
   useEffect(() => {
-    api.me().then(setProfile).catch(() => clearToken());
-  }, []);
+    if (!profile) {
+      fetchProfile();
+    }
+  }, [profile, fetchProfile]);
 
   return (
     <main style={{ maxWidth: 640, margin: '4rem auto', fontFamily: 'sans-serif' }}>
@@ -23,7 +27,7 @@ function Dashboard() {
       )}
       <button
         onClick={() => {
-          clearToken();
+          logout();
           window.location.assign('/login');
         }}
       >
@@ -34,7 +38,8 @@ function Dashboard() {
 }
 
 function RequireAuth({ children }: { children: JSX.Element }) {
-  return isAuthenticated() ? children : <Navigate to="/login" replace />;
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated());
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
 export default function App() {

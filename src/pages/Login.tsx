@@ -1,10 +1,11 @@
+// FILE: frontend/src/pages/Login.tsx
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, ApiError } from '../api/client';
-import { setToken, clearToken } from '../auth/session';
+import { useAuthStore } from '../store/authStore';
 
 export default function Login() {
   const navigate = useNavigate();
+  const login = useAuthStore((s) => s.login);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -15,29 +16,10 @@ export default function Login() {
     setError(null);
     setLoading(true);
     try {
-      // 1) Authenticate against the backend (which proxies the external auth).
-      const { token } = await api.login(email, password);
-      setToken(token);
-
-      // 2) Resolve the application profile. A 404 here means the credentials
-      //    are valid but no profile is provisioned — block access.
-      try {
-        await api.me();
-        navigate('/');
-      } catch (profileErr) {
-        clearToken();
-        if (profileErr instanceof ApiError && profileErr.status === 404) {
-          setError('No profile found, contact admin');
-        } else {
-          setError('Unable to load your profile. Please try again.');
-        }
-      }
-    } catch (loginErr) {
-      const message =
-        loginErr instanceof ApiError && loginErr.status === 401
-          ? 'Invalid email or password'
-          : 'Login failed. Please try again.';
-      setError(message);
+      await login(email, password);
+      navigate('/');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
