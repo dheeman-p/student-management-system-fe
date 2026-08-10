@@ -1,4 +1,6 @@
+// FILE: frontend/src/api/client.ts
 import { getToken, clearToken } from '../auth/session';
+import { CreateStudentInput, Student, UpdateStudentInput } from '../types/student';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
@@ -60,5 +62,26 @@ export const api = {
   },
   me(): Promise<UserProfile> {
     return request('/auth/me');
+  },
+  listStudents(): Promise<Student[]> {
+    return request('/students');
+  },
+  getStudent(id: string): Promise<Student> {
+    return request(`/students/${id}`);
+  },
+  createStudent(input: CreateStudentInput): Promise<Student> {
+    return request('/students', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  },
+  updateStudent(id: string, input: UpdateStudentInput): Promise<Student> {
+    return request(`/students/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(input),
+    });
+  },
+  deleteStudent(id: string): Promise<void> {
+    return request(`/students/${id}`, { method: 'DELETE' });
   },
 };

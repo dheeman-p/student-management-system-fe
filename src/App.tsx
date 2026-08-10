@@ -1,7 +1,8 @@
 // FILE: frontend/src/App.tsx
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
 import Login from './pages/Login';
+import Students from './pages/Students';
 import { useAuthStore } from './store/authStore';
 
 function Dashboard() {
@@ -25,6 +26,9 @@ function Dashboard() {
       ) : (
         <p>Loading…</p>
       )}
+      <p>
+        <Link to="/students">View students</Link>
+      </p>
       <button
         onClick={() => {
           logout();
@@ -51,6 +55,14 @@ export default function App() {
         element={
           <RequireAuth>
             <Dashboard />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/students"
+        element={
+          <RequireAuth>
+            <Students />
           </RequireAuth>
         }
       />
