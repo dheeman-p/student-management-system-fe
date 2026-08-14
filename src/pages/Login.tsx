@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 import { api, ApiError } from '../api/client';
 import { setToken, clearToken } from '../auth/session';
 
@@ -44,7 +45,9 @@ export default function Login() {
   }
 
   return (
-    <main style={{ maxWidth: 360, margin: '4rem auto', fontFamily: 'sans-serif' }}>
+    <>
+      <Header />
+      <main style={{ maxWidth: 360, margin: '4rem auto', fontFamily: 'sans-serif' }}>
       <h1>Sign in</h1>
       <form onSubmit={handleSubmit}>
         <label style={{ display: 'block', marginBottom: 12 }}>
@@ -76,6 +79,7 @@ export default function Login() {
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
-    </main>
+      </main>
+    </>
   );
 }
