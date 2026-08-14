@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Login from './pages/Login';
+import SettingsPage from './pages/SettingsPage';
 import { isAuthenticated, clearToken } from './auth/session';
 import { api, UserProfile } from './api/client';
 
@@ -41,6 +42,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/settings" element={<SettingsPage />} />
       <Route
         path="/"
         element={
