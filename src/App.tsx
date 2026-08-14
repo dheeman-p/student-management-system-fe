@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Login from './pages/Login';
+import Header from './components/Header';
 import { isAuthenticated, clearToken } from './auth/session';
 import { api, UserProfile } from './api/client';
 
@@ -12,7 +13,9 @@ function Dashboard() {
   }, []);
 
   return (
-    <main style={{ maxWidth: 640, margin: '4rem auto', fontFamily: 'sans-serif' }}>
+    <>
+      <Header />
+      <main style={{ maxWidth: 640, margin: '4rem auto', fontFamily: 'sans-serif' }}>
       <h1>Dashboard</h1>
       {profile ? (
         <p>
@@ -29,7 +32,8 @@ function Dashboard() {
       >
         Sign out
       </button>
-    </main>
+      </main>
+    </>
   );
 }
 
