@@ -45,7 +45,7 @@ export default function Login() {
 
   return (
     <main style={{ maxWidth: 360, margin: '4rem auto', fontFamily: 'sans-serif' }}>
-      <h1>Sign in</h1>
+      <h1 data-qa2="ok">Sign in</h1>
       <form onSubmit={handleSubmit}>
         <label style={{ display: 'block', marginBottom: 12 }}>
           Email
