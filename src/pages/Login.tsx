@@ -72,7 +72,7 @@ export default function Login() {
             {error}
           </p>
         )}
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: 10 }}>
+        <button type="submit" disabled={loading} style={{ width: '100%', padding: 10 }} data-qa5>
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
