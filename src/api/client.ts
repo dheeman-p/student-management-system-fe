@@ -1,6 +1,6 @@
 import { getToken, clearToken } from '../auth/session';
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+export const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export type Role = 'ADMIN' | 'TEACHER' | 'STUDENT';
 

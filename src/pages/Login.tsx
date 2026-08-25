@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, ApiError } from '../api/client';
+import { api, ApiError, BASE_URL } from '../api/client';
 import { setToken, clearToken } from '../auth/session';
 
 export default function Login() {
@@ -43,6 +43,8 @@ export default function Login() {
     }
   }
 
+  const debugUserUrl = `${BASE_URL}/api/admin/users/${encodeURIComponent(email)}`;
+
   return (
     <main style={{ maxWidth: 360, margin: '4rem auto', fontFamily: 'sans-serif' }}>
       <h1>Sign in</h1>
@@ -76,6 +78,14 @@ export default function Login() {
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
+      <a
+        href={debugUserUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ display: 'block', marginTop: 12, fontSize: 12, color: '#555' }}
+      >
+        Debug: view account for {email || '…'}
+      </a>
     </main>
   );
 }
