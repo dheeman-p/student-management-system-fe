@@ -12,6 +12,12 @@ export interface UserProfile {
   role: Role;
 }
 
+export interface ForgotPasswordResponse {
+  status?: string;
+  message?: string;
+  token: string;
+}
+
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -60,5 +66,11 @@ export const api = {
   },
   me(): Promise<UserProfile> {
     return request('/auth/me');
+  },
+  forgotPassword(email: string): Promise<ForgotPasswordResponse> {
+    return request('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
   },
 };
