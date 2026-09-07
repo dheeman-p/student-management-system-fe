@@ -11,8 +11,37 @@ const SYSTEM_QUERY = '(prefers-color-scheme: dark)';
 
 const PREFERENCES: readonly ThemePreference[] = ['light', 'dark', 'system'];
 
+/**
+ * Last preference chosen in this session. localStorage can be unavailable
+ * (cookies/site-data blocked, sandboxed contexts without allow-same-origin),
+ * where every access throws; this mirror keeps the module functional in that
+ * case and is what readThemePreference() falls back to.
+ */
+let inMemoryPreference: ThemePreference | null = null;
+
+/** Read the stored preference, treating storage failures as "nothing stored". */
+function readStored(): string | null {
+  try {
+    return localStorage.getItem(THEME_KEY);
+  } catch {
+    return null;
+  }
+}
+
+/** Persist the preference, keeping it in memory when storage is unavailable. */
+function writeStored(preference: ThemePreference): void {
+  try {
+    localStorage.setItem(THEME_KEY, preference);
+  } catch {
+    // Storage unavailable — the in-memory mirror still applies this session.
+  }
+}
+
 function storedPreference(): ThemePreference | null {
-  const raw = localStorage.getItem(THEME_KEY);
+  // Prefer the in-session choice so a storage failure mid-session never
+  // silently reverts the toggle to the OS-following default.
+  if (inMemoryPreference !== null) return inMemoryPreference;
+  const raw = readStored();
   return PREFERENCES.includes(raw as ThemePreference) ? (raw as ThemePreference) : null;
 }
 
@@ -39,14 +68,17 @@ export function applyTheme(preference: ThemePreference): ResolvedTheme {
 
 /** Persist a preference and apply it immediately. */
 export function setThemePreference(preference: ThemePreference): void {
-  localStorage.setItem(THEME_KEY, preference);
+  inMemoryPreference = preference;
+  writeStored(preference);
   applyTheme(preference);
 }
 
 /**
  * Bootstrap the theme and keep it in sync: applies the stored preference at
  * startup and re-applies whenever the OS theme changes while 'system' is the
- * active preference. Returns a cleanup function for tests.
+ * active preference. Safe to call when localStorage is unavailable — boot
+ * gracefully falls back to the system theme instead of throwing.
+ * Returns a cleanup function for tests.
  */
 export function initTheme(): () => void {
   applyTheme(readThemePreference());
