@@ -4,6 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Management System</title>
+    <script>
+      // Apply the saved theme before first paint so reloads never flash the
+      // wrong palette. Defaults to 'system' when nothing is stored.
+      (function () {
+        try {
+          var saved = localStorage.getItem('sms.theme');
+          var preference =
+            saved === 'light' || saved === 'dark' || saved === 'system'
+              ? saved
+              : 'system';
+          var theme =
+            preference === 'system'
+              ? window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+              : preference;
+          document.documentElement.dataset.theme = theme;
+        } catch (err) {
+          // Storage can be unavailable (e.g. blocked) — initTheme() in
+          // src/main.tsx still applies the correct theme on boot.
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
