@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../api/client';
 import { setToken, clearToken } from '../auth/session';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -44,38 +45,43 @@ export default function Login() {
   }
 
   return (
-    <main style={{ maxWidth: 360, margin: '4rem auto', fontFamily: 'sans-serif' }}>
-      <h1>Sign in</h1>
-      <form onSubmit={handleSubmit}>
-        <label style={{ display: 'block', marginBottom: 12 }}>
-          Email
-          <input
-            type="email"
-            value={email}
-            required
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: '100%', padding: 8 }}
-          />
-        </label>
-        <label style={{ display: 'block', marginBottom: 12 }}>
-          Password
-          <input
-            type="password"
-            value={password}
-            required
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ width: '100%', padding: 8 }}
-          />
-        </label>
-        {error && (
-          <p role="alert" style={{ color: '#b00020' }}>
-            {error}
-          </p>
-        )}
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: 10 }}>
-          {loading ? 'Signing in…' : 'Sign in'}
-        </button>
-      </form>
+    <main className="page page--compact">
+      <div className="card">
+        <div className="page-header">
+          <h1>Sign in</h1>
+          <ThemeToggle />
+        </div>
+        <form onSubmit={handleSubmit}>
+          <label className="field">
+            Email
+            <input
+              className="input"
+              type="email"
+              value={email}
+              required
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+          <label className="field">
+            Password
+            <input
+              className="input"
+              type="password"
+              value={password}
+              required
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </label>
+          {error && (
+            <p role="alert" className="form-error">
+              {error}
+            </p>
+          )}
+          <button type="submit" disabled={loading} className="btn btn--block">
+            {loading ? 'Signing in…' : 'Sign in'}
+          </button>
+        </form>
+      </div>
     </main>
   );
 }

@@ -1,0 +1,171 @@
+/* ---------------------------------------------------------------------------
+ * Theme tokens
+ *
+ * Semantic color tokens shared by every surface in the app. Light values are
+ * the defaults on :root; dark values override them under
+ * html[data-theme='dark']. The color-scheme property is set per theme so
+ * native form controls and scrollbars match the active theme as well.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-text: #1c2024;
+  --color-muted: #5f6b76;
+  --color-primary: #1d4ed8;
+  --color-error: #b00020;
+  --color-border: #d7dce2;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #101216;
+  --color-surface: #1a1e24;
+  --color-text: #e8ebee;
+  --color-muted: #9aa4af;
+  --color-primary: #3b82f6;
+  --color-error: #ff8fa3;
+  --color-border: #363d46;
+}
+
+/* ---------------------------------------------------------------------------
+ * Base
+ * ------------------------------------------------------------------------- */
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------------------
+ * Page scaffolding
+ * ------------------------------------------------------------------------- */
+
+.page {
+  max-width: 640px;
+  margin: 4rem auto;
+  padding: 0 1rem;
+}
+
+.page--compact {
+  max-width: 360px;
+  padding: 0;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Form controls
+ * ------------------------------------------------------------------------- */
+
+.field {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.form-error {
+  margin: 0 0 12px;
+  color: var(--color-error);
+}
+
+/* ---------------------------------------------------------------------------
+ * Buttons
+ * ------------------------------------------------------------------------- */
+
+.btn {
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover {
+  filter: brightness(1.08);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--secondary {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+/* ---------------------------------------------------------------------------
+ * Theme toggle (Light / Dark / System)
+ * ------------------------------------------------------------------------- */
+
+.theme-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background-color: var(--color-surface);
+}
+
+.theme-toggle__option {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-muted);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.theme-toggle__option:hover:not(.theme-toggle__option--active) {
+  color: var(--color-text);
+}
+
+.theme-toggle__option--active {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
